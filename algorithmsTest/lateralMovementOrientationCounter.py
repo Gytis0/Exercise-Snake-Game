@@ -64,28 +64,28 @@ def detect_lateral_movement(threshold, acc):
 
 # Main loop example
 
-try:
-    while True:
-        poll_readings()
-        acc = get_acceleration_without_tilt()
-        is_moving, direction, accel_x = detect_lateral_movement(THRESHOLD, acc)
+# try:
+#     while True:
+#         poll_readings()
+#         acc = get_acceleration_without_tilt()
+#         is_moving, direction, accel_x = detect_lateral_movement(THRESHOLD, acc)
         
-        # Display information
+#         # Display information
         
-        print(f"Pitch: {cached_pitch:6.1f}° | Roll: {cached_roll:6.1f}°")
-        print(f"Raw X: {cached_x:6.3f}g | GX: {acc['gx']:6.3f}g")
-        print(f"True X: {acc['x']:6.3f}g", end="")
+#         print(f"Pitch: {cached_pitch:6.1f}° | Roll: {cached_roll:6.1f}°")
+#         print(f"Raw X: {cached_x:6.3f}g | GX: {acc['gx']:6.3f}g")
+#         print(f"True X: {acc['x']:6.3f}g", end="")
         
-        if is_moving:
-            print(f" -> MOVING {direction}!")
-            sense.show_letter(">" if direction == "RIGHT" else "<", text_colour=[255, 0, 0])
-        else:
-            print(" (stationary)")
-            sense.clear()
+#         if is_moving:
+#             print(f" -> MOVING {direction}!")
+#             sense.show_letter(">" if direction == "RIGHT" else "<", text_colour=[255, 0, 0])
+#         else:
+#             print(" (stationary)")
+#             sense.clear()
         
-        print("-" * 50)
-        time.sleep(0.001)
+#         print("-" * 50)
+#         time.sleep(0.001)
         
-except KeyboardInterrupt:
-    sense.clear()
-    print("\nStopped.")
+# except KeyboardInterrupt:
+#     sense.clear()
+#     print("\nStopped.")
