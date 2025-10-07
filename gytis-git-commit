@@ -1,0 +1,15 @@
+#!/bin/bash
+# Usage: ./commit.sh "Your commit message"
+
+if [ -z "$1" ]; then
+  echo "Error: Commit message required."
+  echo "Usage: ./commit.sh \"Your commit message\""
+  exit 1
+fi
+
+git config user.name "Gytis Kupcinskas"
+git config user.email "gytiskupcinskas0@gmail.com"
+
+git add .
+git commit -m "$1"
+
