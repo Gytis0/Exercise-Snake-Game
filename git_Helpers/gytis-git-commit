@@ -7,6 +7,9 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+# Change directory to repo root
+cd "$(dirname "$0")/.." || exit 1  # assumes this is one level below root
+
 git config user.name "Gytis Kupcinskas"
 git config user.email "gytiskupcinskas0@gmail.com"
 
