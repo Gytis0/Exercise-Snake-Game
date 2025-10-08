@@ -99,12 +99,6 @@ MATRIX_MIN_VALUE = 0
 MATRIX_MAX_VALUE = 7
 MATRIX_SIZE = 8
 
-from sense_hat import SenseHat
-import time, random
-
-senseHat = SenseHat()
-senseHat.low_light = True
-
 while True:
     # variables:
     gameOverFlag = False
