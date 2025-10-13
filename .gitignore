@@ -217,3 +217,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# node modules 
+web/frontend/scoreboard/node_modules
