@@ -1,7 +1,8 @@
 from sense_hat import SenseHat
 import time
 import random
-from lateralMovementOrientationCounter import get_acceleration_without_tilt, poll_readings
+import os
+from prototypes.lateralMovementOrientationCounter import get_acceleration_without_tilt, poll_readings
 
 senseHat = SenseHat()
 senseHat.low_light = True
@@ -18,7 +19,7 @@ THRESHOLD = 0.25
 def get_movement_tilt_corrected():
     poll_readings()
     acc = get_acceleration_without_tilt()
-    
+
     if abs(acc['x']) > abs(acc['y']):
         if acc['x'] > THRESHOLD:
             return (1, 0)   # right
@@ -31,73 +32,84 @@ def get_movement_tilt_corrected():
             return (0, -1)  # up
     return None
 
+
 def five_img():
     W = WHITE
     O = NO_LED
-    img = [O, O, W, W, W, W, O, O,
+    img = [
+        O, O, W, W, W, W, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, W, W, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
-        O, O, W, W, W, W, O, O,]
+        O, O, W, W, W, W, O, O,
+    ]
     return img
 
 
 def four_img():
     W = WHITE
     O = NO_LED
-    img = [O, O, W, O, O, O, O, O,
+    img = [
+        O, O, W, O, O, O, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, O, W, O, O, O,
         O, O, W, W, W, W, O, O,
         O, O, O, O, W, O, O, O,
         O, O, O, O, W, O, O, O,
-        O, O, O, O, W, O, O, O,]
+        O, O, O, O, W, O, O, O,
+    ]
     return img
 
 
 def three_img():
     W = WHITE
     O = NO_LED
-    img = [O, O, W, W, W, W, O, O,
+    img = [
+        O, O, W, W, W, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, W, W, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
-        O, O, W, W, W, W, O, O,]
+        O, O, W, W, W, W, O, O,
+    ]
     return img
 
 
 def two_img():
     W = WHITE
     O = NO_LED
-    img = [O, O, W, W, W, W, O, O,
+    img = [
+        O, O, W, W, W, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, O, O, O, W, O, O,
         O, O, W, W, W, W, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, O, O, O, O, O,
         O, O, W, O, O, O, O, O,
-        O, O, W, W, W, W, O, O,]
+        O, O, W, W, W, W, O, O,
+    ]
     return img
 
 
 def one_img():
     W = WHITE
     O = NO_LED
-    img = [O, O, O, O, W, O, O, O,
+    img = [
+        O, O, O, O, W, O, O, O,
         O, O, O, W, W, O, O, O,
         O, O, W, O, W, O, O, O,
         O, O, O, O, W, O, O, O,
         O, O, O, O, W, O, O, O,
         O, O, O, O, W, O, O, O,
         O, O, O, O, W, O, O, O,
-        O, O, O, W, W, W, O, O,]
+        O, O, O, W, W, W, O, O,
+    ]
     return img
 
 
@@ -109,65 +121,6 @@ MATRIX_MAX_VALUE = 7
 MATRIX_SIZE = 8
 
 senseHat.set_imu_config(False, False, False)
-
-from sense_hat import SenseHat
-import time, random
-
-senseHat = SenseHat()
-senseHat.low_light = True
-senseHat.set_imu_config(True, False, False)  # enable accelerometer only
-
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-WHITE = (255, 255, 255)
-NO_LED = (0, 0, 0)
-
-# ==============================
-# Movement detection setup
-# ==============================
-alpha = 0.8            # smoothing factor for high-pass filter
-threshold = 2        # movement threshold (tune!)
-step_cooldown = 0.5    # seconds between direction changes (better to keep it lower than the speed of the snake so input will not be missed)
-
-last_x, last_y = 0, 0
-last_filtered_x, last_filtered_y = 0, 0
-last_step_time = time.time()
-
-def get_movement():
-    """
-    Detect step-based movement from accelerometer.
-    Returns a direction vector (dx, dy) or None if no new step detected.
-    """
-    global last_x, last_y, last_filtered_x, last_filtered_y, last_step_time
-
-    accel = senseHat.get_accelerometer_raw()
-    x = accel['x'] * 10
-    y = accel['y'] * 10
-
-    # High-pass filter
-    x_filtered = alpha * (last_filtered_x + x - last_x)
-    y_filtered = alpha * (last_filtered_y + y - last_y)
-
-    last_x, last_y = x, y
-    last_filtered_x, last_filtered_y = x_filtered, y_filtered
-
-    current_time = time.time()
-    if current_time - last_step_time > step_cooldown:
-        if abs(x_filtered) > abs(y_filtered):
-            if x_filtered > threshold:
-                last_step_time = current_time
-                return (1, 0)   # right
-            elif x_filtered < -threshold:
-                last_step_time = current_time
-                return (-1, 0)  # left
-        else:
-            if y_filtered > threshold:
-                last_step_time = current_time
-                return (0, 1)   # down
-            elif y_filtered < -threshold:
-                last_step_time = current_time
-                return (0, -1)  # up
-    return None
 
 
 while True:
@@ -217,18 +170,14 @@ while True:
         if gameOverFlag:
             break
 
-        # #print("Gyro: {0}".format(senseHat.gyro_raw))
-        # print("Acce: {0}".format(senseHat.accel_raw))
-        # # check joystick events:
         move = get_movement_tilt_corrected()
-        
+
         if move:
             dx, dy = move
             # Prevent reversing into itself
             if dx != -movementX or dy != -movementY:
                 movementX, movementY = dx, dy
-       
-        # print(movementY)
+
         # grow snake:
         if growSnakeFlag:
             growSnakeFlag = False
