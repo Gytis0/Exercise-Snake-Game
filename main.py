@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from sense_hat import SenseHat
 import time, subprocess, os
+from remind import should_show_notification, show_notification, update_last_play_time
 
-# 用“模块名”而不是文件路径
+# 用"模块名"而不是文件路径
 MODES = [
     ("TILT", "prototypes.snake_tilt"),
     ("GYRO", "prototypes.snake_gyro"),
@@ -16,6 +17,10 @@ SPEEDS = [("EASY", "0.25"), ("NORM", "0.15"), ("HARD", "0.08")]
 sense = SenseHat()
 sense.low_light = True
 sense.clear()
+
+# Check if notification should be shown (24 hours since last play)
+if should_show_notification():
+    show_notification(sense)
 
 def show(text):
     sense.show_message(text, scroll_speed=0.06, text_colour=[0,255,0])
@@ -39,10 +44,13 @@ def main():
     speed_name, speed_val   = choose(SPEEDS, "SPEED")
     show(f"GO {mode_name}-{speed_name}")
 
+    # Update last play timestamp when game starts
+    update_last_play_time()
+
     env = os.environ.copy()
     env["SNAKE_SPEED"] = speed_val
 
-    # 关键：以“模块”方式运行，保证包导入可用
+    # 关键：以"模块"方式运行，保证包导入可用
     subprocess.run(
         ["/usr/bin/env", "python3", "-m", module_name],
         cwd=os.path.dirname(__file__),
