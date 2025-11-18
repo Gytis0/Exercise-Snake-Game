@@ -8,7 +8,7 @@ import os
 import time
 
 LAST_PLAY_FILE = "last_play.json"
-NOTIFICATION_COOLDOWN_HOURS = 24
+NOTIFICATION_COOLDOWN_HOURS = 23
 
 
 def get_last_play_time():
@@ -83,7 +83,7 @@ def show_notification(sense_hat):
     flash_led_grid(sense_hat, times=3, flash_color=(255, 255, 0), flash_duration=0.15)
 
     # Show "time to play" message
-    sense_hat.show_message("PLAY", scroll_speed=0.07, text_colour=[255, 255, 0])
+    sense_hat.show_message("TIME TO PLAY", scroll_speed=0.07, text_colour=[255, 255, 0])
 
     # Clear after message
     sense_hat.clear()
